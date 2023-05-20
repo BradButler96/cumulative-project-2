@@ -31,6 +31,11 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 
 function companyQueryFilters(filters) {
 
+  // Throw error if invalid filter submitted
+  Object.keys(filters).map(filter => {
+    if (filter != 'minEmp' || filter != 'maxEmp' || filter != 'name') throw new BadRequestError(`Invalid filter submitted`)
+  })
+
   // Throw error if minimum employee count is greater than maximum employee count
   if (parseInt(filters.minEmp) > parseInt(filters.maxEmp)) throw new BadRequestError(`Minimum Employees must be greater than Maximum Employees`)
     
@@ -59,9 +64,6 @@ function companyQueryFilters(filters) {
 
   // Join strings for SQL command into one string linked with "AND" if necessary
   const filterStr = filtersArr.join(' AND ')
-
-  console.log(filterStr)
-  console.log(filterVals)
 
   // Return SQL command string and array of corresponding values
   return {
